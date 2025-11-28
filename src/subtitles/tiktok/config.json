@@ -2,14 +2,21 @@
     "name": "tiktok",
     "font": "Montserrat-ExtraBold.ttf",
     "fontName": "Montserrat ExtraBold",
-    "fontSize": 90,
-    "outline": 12,
-    "shadow": 5,
-    "highlightColor": "&H00FFFF&",
-    "normalColor": "&HFFFFFF&",
+
+    "fontSize": 80,
+    "outline": 6,
+    "shadow": 3,
+
+    "normalColor": "&H00FFFFFF&",
+    "highlightColor": "&H00FF00FF&",
+
     "bounceIn": 150,
     "bounceOut": 150,
+    "bounceInScale": 115,
+
     "maxWordsPerGroup": 3,
     "maxGap": 0.35,
-    "uppercase": true
+    "uppercase": true,
+
+    "align": "bottom"
 }

@@ -5,21 +5,23 @@ const files = require("./files");
 
 module.exports.convertToAudio = async (inputPath) => {
     const fileName = path.basename(inputPath, path.extname(inputPath));
-    const outputPath = path.join(path.dirname(inputPath), `${fileName}.mp3`);
+    const dir = path.dirname(inputPath);
+    const finalWav = path.join(dir, `${fileName}_whisper.wav`);
 
-    const cmd = `ffmpeg -i "${inputPath}" -vn -acodec libmp3lame -ab 192k "${outputPath}"`;
+    const cmd = `ffmpeg -y -i "${inputPath}" \
+-af "highpass=f=100,lowpass=f=3000,dynaudnorm,afftdn" \
+-ac 1 -ar 16000 "${finalWav}"`;
+
     return new Promise((resolve, reject) => {
         exec(cmd, (error, stdout, stderr) => {
-            if (error) {
-                return reject(error);
-            }
+            if (error) return reject({ error: "audio_conversion_failed", details: stderr });
             resolve({
-                mp3Path: outputPath,
+                mp3Path: finalWav,
                 mp4Path: inputPath
             });
         });
-    })
-}
+    });
+};
 
 // inputFile: tmp/filename.mp4
 // assFile: tmp/filename.ass

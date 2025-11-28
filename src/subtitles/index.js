@@ -1,7 +1,32 @@
 const fs = require("fs");
 const path = require("path");
 
-async function generate(templateName, words) {
+/**
+ * @typedef TemplateConfig
+ * @property {string} name
+ * @property {string} font
+ * @property {string} fontName
+ * @property {number} fontSize
+ * @property {number} outline
+ * @property {number} shadow
+ * @property {string} normalColor
+ * @property {string} highlightColor
+ * @property {number} bounceIn
+ * @property {number} bounceOut
+ * @property {number} bounceInScale
+ * @property {number} maxWordsPerGroup
+ * @property {number} maxGap
+ * @property {boolean} uppercase
+ */
+
+/**
+ * 
+ * @param {string} templateName 
+ * @param {Array} words 
+ * @param {TemplateConfig} overrideConfig 
+ * @returns 
+ */
+async function generate(templateName, words, overrideConfig = {}) {
     const templateDir = path.join(__dirname, templateName);
 
     if (!fs.existsSync(templateDir)) {
@@ -9,20 +34,25 @@ async function generate(templateName, words) {
     }
 
     const configPath = path.join(templateDir, "config.json");
-    const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    const baseConfig = JSON.parse(fs.readFileSync(configPath, "utf8"));
+
+    const finalConfig = {
+        ...baseConfig,
+        ...overrideConfig
+    };
 
     const templateFn = require(path.join(templateDir, "template.js"));
 
-    const assContent = templateFn(words, config);
-    return assContent;
+    return templateFn(words, finalConfig);
 }
 
 function getValidTemplates() {
-    const templates = fs.readdirSync(__dirname).filter(file => {
-        const templatePath = path.join(__dirname, file);
-        return fs.lstatSync(templatePath).isDirectory() && fs.existsSync(path.join(templatePath, "template.js")) && fs.existsSync(path.join(templatePath, "config.json"));
+    return fs.readdirSync(__dirname).filter(file => {
+        const p = path.join(__dirname, file);
+        return fs.lstatSync(p).isDirectory()
+            && fs.existsSync(path.join(p, "template.js"))
+            && fs.existsSync(path.join(p, "config.json"));
     });
-    return templates;
 }
 
 module.exports = { generate, getValidTemplates };
