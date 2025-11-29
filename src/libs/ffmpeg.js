@@ -6,7 +6,7 @@ const files = require("./files");
 module.exports.convertToAudio = async (inputPath) => {
     const fileName = path.basename(inputPath, path.extname(inputPath));
     const dir = path.dirname(inputPath);
-    const finalWav = path.join(dir, `${fileName}_whisper.wav`);
+    const finalWav = path.join(dir, `${fileName}.wav`);
 
     const cmd = `ffmpeg -y -i "${inputPath}" \
 -af "highpass=f=100,lowpass=f=3000,dynaudnorm,afftdn" \

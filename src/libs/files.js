@@ -35,3 +35,5 @@ module.exports.loadTranscription = async () => {
     const data = fs.readFileSync(inputPath, "utf-8");
     return JSON.parse(data);
 }
+
+module.exports.tmpPath = (id, ext) => `tmp/${id}${ext}`;
